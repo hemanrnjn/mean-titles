@@ -6,7 +6,7 @@
   "permissions": ["tabs", "storage", "declarativeContent", "https://*.netflix.com/"],
   "content_scripts": [
     {
-      "js": ["script.js", "./lib/js/jquery.min.js", "./lib/js/sweetalert.min.js"],
+      "js": ["script.js", "./lib/js/jquery.min.js", "./lib/js/sweetalert.min.js", "./lib/js/bootstrap.min.js"],
       "css": ["./lib/css/bootstrap.min.css"],
       "matches": ["https://*.netflix.com/*"]
     }
