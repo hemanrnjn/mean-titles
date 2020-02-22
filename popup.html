@@ -2,24 +2,27 @@
 <html>
   <head>
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600" rel="stylesheet" />
-    <link rel="stylesheet" href="popup.css" />
+    <link rel="stylesheet" href="lib/css/popup.css" />
+    <link rel="stylesheet" href="lib/css/bootstrap.min.css" />
   </head>
   <body>
-    <div class="container logo">
-      NETFLIX SUBTITLES MEANING
+    <div class="container-fluid">
+      <div class="card">
+        <div class="card-header">
+          NETFLIX SUBTITLES MEANING
+        </div>
+        <div class="card-body">
+          <div class="list-group" id="mean-title-list">
+          </div>
+        </div>
+        <div class="card-footer">
+          &copy; ashsaghim
+        </div>
+      </div>
     </div>
-    <form id="popup-form" class="container">
-      <div class="input-info">Vertical position from bottom [px]</div>
-      <input class="form-control" id="vPos" type="number" value="" min="0" max="5000" />
-      <div class="input-info">Font size [px]</div>
-      <input id="fSize" type="number" value="" min="0" max="300" />
-      <div class="input-info">Font color [HEX]</div>
-      <input id="fColor" type="text" value="" pattern="^#[0-9A-F]{6}$" />
-      <button id="change" type="submit">Change</button>
-    </form>
-    <div class="container footer">
-      &copy; ashsaghim,
-    </div>
+    <script src="lib/js/jquery.min.js"></script>
+    <script src="lib/js/popper.min.js"></script>
+    <script src="lib/js/bootstrap.min.js"></script>
     <script src="popup.js"></script>
   </body>
 </html>

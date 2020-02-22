@@ -4,10 +4,13 @@
   "description": "Subtitles word meaning search",
   "author": "ashsaghim",
   "permissions": ["tabs", "storage", "declarativeContent", "https://*.netflix.com/"],
-  "background": {
-    "scripts": ["background.js"],
-    "persistent": false
-  },
+  "content_scripts": [
+    {
+      "js": ["script.js", "./lib/js/jquery.min.js", "./lib/js/sweetalert.min.js"],
+      "css": ["./lib/css/bootstrap.min.css"],
+      "matches": ["https://*.netflix.com/*"]
+    }
+  ],
   "page_action": {
     "default_popup": "popup.html",
     "default_icon": "logo.png"
