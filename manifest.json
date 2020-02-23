@@ -3,19 +3,22 @@
   "version": "1.0",
   "description": "Subtitles word meaning search",
   "author": "ashsaghim",
+  "homepage_url": "https://github.com/hemanrnjn/mean-titles",
   "permissions": ["tabs", "storage", "declarativeContent", "https://*.netflix.com/"],
   "content_scripts": [
     {
       "js": ["script.js", "./lib/js/jquery.min.js", "./lib/js/sweetalert.min.js", "./lib/js/bootstrap.min.js"],
       "css": ["./lib/css/bootstrap.min.css"],
-      "matches": ["https://*.netflix.com/*"]
+      "matches": ["https://*.netflix.com/watch/*"]
     }
   ],
+  "background": {
+    "scripts": ["background.js"],
+    "persistent": false
+  },
   "page_action": {
     "default_popup": "popup.html",
     "default_icon": "logo.png"
   },
   "manifest_version": 2
 }
-
-// "homepage_url": "https://github.com/twistezo/netflix-subtitles-styler",

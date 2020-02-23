@@ -1,26 +1,11 @@
-// function loadScript(url, callback){
-//
-//     var script = document.createElement("script")
-//     script.type = "text/javascript";
-//     script.setAttribute("async", "false");
-//
-//     if (script.readyState){  //IE
-//         script.onreadystatechange = function(){
-//             if (script.readyState === "loaded" ||
-//                 script.readyState === "complete"){
-//                 script.onreadystatechange = null;
-//                 callback();
-//             }
-//         };
-//     } else {  //Others
-//         script.onload = function(){
-//             callback();
-//         };
-//     }
-//
-//     script.src = url;
-//     document.getElementsByTagName("head")[0].appendChild(script);
-// }
+var initialised = false;
+chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+    if (request.message === "sent") {
+        sendResponse({message: "received"});
+        initialised = false;
+        startListener();
+    }
+});
 
 function getMeaning(video) {
     let val = [];
@@ -89,7 +74,7 @@ function getMeaning(video) {
     }
 }
 
-var initialised = false;
+
 function startListener() {
     console.log("%cMean-titles : Listener is working... ", "color: red;");
     let callback = () => {
@@ -113,4 +98,4 @@ function startListener() {
     });
 }
 
-startListener();
+
