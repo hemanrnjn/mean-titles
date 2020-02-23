@@ -1,29 +1,44 @@
-var initialised = false;
+var netflixInit = false;
+var primeInit = false;
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-    if (request.message === "sent") {
+    let url = location.href;
+    if (url.includes("netflix") || url.includes("youtube")) {
         sendResponse({message: "received"});
-        initialised = false;
-        startListener();
+        netflixInit = false;
+        startListener(url);
+    } else if (url.includes("primevideo")) {
+        sendResponse({message: "received"});
+        primeInit = false;
+        startListener(url);
     }
 });
 
-function getMeaning(video) {
+function getMeaning(url, video) {
     let val = [];
-    const subtitles = document.querySelector(".player-timedtext");
+    var subtitles;
+    if (url === "netflix") {
+        subtitles = document.querySelector(".player-timedtext");
+    } else if (url === "primevideo") {
+        subtitles = document.querySelector('.persistentPanel');
+    } else if (url === "youtube") {
+        subtitles = document.querySelector(".captions-text");
+    }
+
     if (subtitles && video.paused) {
-        // .player-timedtext > .player-timedtext-container [0]
-        const firstChildContainer = subtitles.firstChild;
         if (subtitles.firstChild != null && val.length === 0) {
             let children = subtitles.children;
             for (let i = 0; i < children.length; i++) {
-                let x = children[i].innerText.split(" ");
+                let x = [];
+                if (url === "primevideo") {
+                    x = children[i].innerText.replace(/(\r\n|\n|\r)/gm," ").split(" ")
+                } else {
+                    x = children[i].innerText.split(" ");
+                }
                 x.forEach((e) => {
                     let y = e.replace(/[^\w\s]/gi, '');
                     val.push(y)
                 });
             }
-            // document.getElementById('mean-title-list').innerHTML = str;
-            // let mapObj = [];
             let count = 0;
             let listHtml = '<ul class="list-group">';
             val.forEach((v) => {
@@ -40,24 +55,16 @@ function getMeaning(video) {
                             console.log("Invalid Word")
                         } else {
                             let obj = JSON.parse(resp);
-                            console.log(obj);
                             if (obj.hasOwnProperty('definitions')) {
-                                // mapObj.push({word: v, meaning: obj.definitions[0].definition})
                                 listHtml += '<li class="list-group-item">' + v + ": " + obj.definitions[0].definition + '</li>';
                             } else {
-                                // mapObj.push({word: v, meaning: "No meaning"})
                                 listHtml += '<li class="list-group-item">' + v + ': No meaning</li>';
                             }
-                            // listHtml += '<li class="list-group-item">' + o.word + ": " + o.meaning + '</li>';
                         }
                         count++
                     }
                 };
             });
-            // console.log(mapObj);
-            // mapObj.forEach((o) => {
-            //     listHtml += '<li class="list-group-item">' + o.word + ": " + o.meaning + '</li>';
-            // });
             listHtml += '</ul>';
             let intervalId = setInterval(() => {
                 if (count === val.length) {
@@ -70,20 +77,44 @@ function getMeaning(video) {
                     clearInterval(intervalId);
                 }
             }, 1000);
+            let intrId = setInterval(() => {
+                if (url.includes("primevideo")) {
+                    let x = document.querySelector(".swal2-container");
+                    if (x) {
+                        x.style.zIndex = "10000";
+                        clearInterval(intrId);
+                    }
+                }
+            }, 500);
+
         }
     }
 }
 
 
-function startListener() {
+function startListener(url) {
     console.log("%cMean-titles : Listener is working... ", "color: red;");
     let callback = () => {
-        const video = document.querySelector("video:first-of-type");
-        // .player-timedText
-        if (video && !initialised) {
-            initialised = true;
-            video.onpause = function (e) {
-                getMeaning(video)
+        // let url = location.href;
+        if (url.includes("netflix") || url.includes("youtube")) {
+            const video = document.querySelector("video:first-of-type");
+            // .player-timedText
+            if (video && !netflixInit) {
+                netflixInit = true;
+                video.onpause = function (e) {
+                    getMeaning( url.includes("netflix") ? "netflix": "youtube", video)
+                }
+            }
+        } else if (url.includes("primevideo")) {
+            let elem = document.querySelector('[id^="videoContainer_"]');
+            if (elem) {
+                const video = elem.firstChild;
+                if (video && !primeInit) {
+                    primeInit = true;
+                    video.onpause = function (e) {
+                        getMeaning("primevideo", video)
+                    }
+                }
             }
         }
     };
