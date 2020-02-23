@@ -1,26 +1,22 @@
-var netflixInit = false;
-var primeInit = false;
-chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-    let url = location.href;
-    if (url.includes("netflix") || url.includes("youtube")) {
-        sendResponse({message: "received"});
-        netflixInit = false;
-        startListener(url);
-    } else if (url.includes("primevideo")) {
-        sendResponse({message: "received"});
-        primeInit = false;
-        startListener(url);
-    }
-});
+let netflixInit = false;
+let primeInit = false;
+let hostUrl = location.href;
+if (hostUrl.includes("netflix") || hostUrl.includes("youtube")) {
+    netflixInit = false;
+    startListener(hostUrl);
+} else if (hostUrl.includes("primevideo")) {
+    primeInit = false;
+    startListener(hostUrl);
+}
 
-function getMeaning(url, video) {
+function getMeaning(source, video) {
     let val = [];
     var subtitles;
-    if (url === "netflix") {
+    if (source === "netflix") {
         subtitles = document.querySelector(".player-timedtext");
-    } else if (url === "primevideo") {
+    } else if (source === "primevideo") {
         subtitles = document.querySelector('.persistentPanel');
-    } else if (url === "youtube") {
+    } else if (source === "youtube") {
         subtitles = document.querySelector(".captions-text");
     }
 
@@ -29,7 +25,7 @@ function getMeaning(url, video) {
             let children = subtitles.children;
             for (let i = 0; i < children.length; i++) {
                 let x = [];
-                if (url === "primevideo") {
+                if (source === "primevideo") {
                     x = children[i].innerText.replace(/(\r\n|\n|\r)/gm," ").split(" ")
                 } else {
                     x = children[i].innerText.split(" ");
@@ -37,6 +33,10 @@ function getMeaning(url, video) {
                 x.forEach((e) => {
                     let y = e.replace(/[^\w\s]/gi, '');
                     val.push(y)
+                });
+                //removing duplicates
+                val = val.filter(function(item,i,allItems){
+                    return i===allItems.indexOf(item);
                 });
             }
             let count = 0;
@@ -78,7 +78,7 @@ function getMeaning(url, video) {
                 }
             }, 1000);
             let intrId = setInterval(() => {
-                if (url.includes("primevideo")) {
+                if (source === "primevideo") {
                     let x = document.querySelector(".swal2-container");
                     if (x) {
                         x.style.zIndex = "10000";
